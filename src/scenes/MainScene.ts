@@ -7,6 +7,7 @@ class MainScene extends Phaser.Scene {
     scoreText;
     bombs;
     gameOver = false;
+    sounds: any = {};
 
     constructor() {
         super({
@@ -20,14 +21,23 @@ class MainScene extends Phaser.Scene {
         this.load.image('ground', 'objects/platform.png');
         this.load.image('star', 'sprites/star.png');
         this.load.image('bomb', 'sprites/bomb.png');
-
-        (<any>this.load).spritesheet('dude', 'sprites/dude.png', {
+        this.load.spritesheet('dude', 'sprites/dude.png', {
             frameWidth: 32,
             frameHeight: 48
         });
+        this.load.audio('jump', 'sounds/effects/jump.ogg');
+        this.load.audio('success', 'sounds/effects/success.ogg');
+        this.load.audio('hit', 'sounds/effects/hit.ogg');
+        this.load.audio('collected', 'sounds/effects/collected.ogg');
+        this.load.audio('bgmusic', 'sounds/music/bg-music.ogg');
     }
 
     create() {
+        this.sounds['jump'] = this.sound.add('jump');
+        this.sounds['hit'] = this.sound.add('hit');
+        this.sounds['success'] = this.sound.add('success');
+        this.sounds['collected'] = this.sound.add('collected');
+        (this.sounds['bgmusic'] = this.sound.add('bgmusic')).play();
         this.add.image(400, 300, 'sky');
 
         this.platforms = this.physics.add.staticGroup();
@@ -70,7 +80,7 @@ class MainScene extends Phaser.Scene {
         this.physics.add.collider(this.player, this.platforms, null, null, null);
         this.cursors = this.input.keyboard.createCursorKeys();
 
-        this.stars = this.physics.add.group(null, {
+        this.stars = this.physics.add.group({
             key: 'star',
             repeat: 11,
             setXY: { x: 12, y: 0, stepX: 70 }
@@ -109,6 +119,7 @@ class MainScene extends Phaser.Scene {
         }
 
         if (this.cursors.up.isDown && this.player.body.touching.down) {
+            this.sounds.jump.play();
             this.player.setVelocityY(-530);
         }
     }
@@ -119,16 +130,17 @@ class MainScene extends Phaser.Scene {
         player.setTint(0xff0000);
 
         player.anims.play('turn');
-
+        this.sounds.hit.play();
         this.gameOver = true;
     }
 
     collectStar(player, star) {
         star.disableBody(true, true);
         this.score += 10;
+        this.sounds.collected.play();
         this.scoreText.setText('Score: ' + this.score);
-
         if (this.stars.countActive(true) === 0) {
+            this.sounds.success.play();
             this.stars.children.iterate((child) => {
                 child.enableBody(true, child.x, 0, true, true);
             });
