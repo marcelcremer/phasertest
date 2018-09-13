@@ -19,8 +19,8 @@ class MainScene extends Phaser.Scene {
     this.load.image("sky", "backgrounds/sky.png");
     this.load.image("ground", "objects/platform.png");
     this.load.image("star", "sprites/star.png");
-	this.load.image("bomb", "sprites/bomb.png");
-	
+    this.load.image("bomb", "sprites/bomb.png");
+
     (<any>this.load).spritesheet("dude", "sprites/dude.png", {
       frameWidth: 32,
       frameHeight: 48
@@ -67,10 +67,10 @@ class MainScene extends Phaser.Scene {
       repeat: -1
     });
 
-    this.physics.add.collider(this.player, this.platforms, null,null,null);
+    this.physics.add.collider(this.player, this.platforms, null, null, null);
     this.cursors = this.input.keyboard.createCursorKeys();
 
-    this.stars = this.physics.add.group(null,{
+    this.stars = this.physics.add.group(null, {
       key: "star",
       repeat: 11,
       setXY: { x: 12, y: 0, stepX: 70 }
@@ -79,8 +79,14 @@ class MainScene extends Phaser.Scene {
     this.stars.children.iterate(function(child) {
       child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
     });
-    this.physics.add.collider(this.stars, this.platforms,null,null,null);
-    this.physics.add.overlap(this.player, this.stars, this.collectStar, null, this);
+    this.physics.add.collider(this.stars, this.platforms, null, null, null);
+    this.physics.add.overlap(
+      this.player,
+      this.stars,
+      this.collectStar,
+      null,
+      this
+    );
     this.scoreText = this.add.text(16, 16, "score: 0", {
       fontSize: "32px",
       fill: "#000"
@@ -88,16 +94,22 @@ class MainScene extends Phaser.Scene {
 
     this.bombs = this.physics.add.group();
 
-    this.physics.add.collider(this.bombs, this.platforms,null,null,null);
+    this.physics.add.collider(this.bombs, this.platforms, null, null, null);
 
-    this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
+    this.physics.add.collider(
+      this.player,
+      this.bombs,
+      this.hitBomb,
+      null,
+      this
+    );
   }
 
   update(time: number, delta: number) {
     if (this.cursors.left.isDown) {
-		this.player.setVelocityX(-160);
+      this.player.setVelocityX(-160);
 
-		this.player.anims.play("left", true);
+      this.player.anims.play("left", true);
     } else if (this.cursors.right.isDown) {
       this.player.setVelocityX(160);
 
@@ -129,7 +141,7 @@ class MainScene extends Phaser.Scene {
     this.scoreText.setText("Score: " + this.score);
 
     if (this.stars.countActive(true) === 0) {
-		this.stars.children.iterate(function(child) {
+      this.stars.children.iterate(function(child) {
         child.enableBody(true, child.x, 0, true, true);
       });
 
