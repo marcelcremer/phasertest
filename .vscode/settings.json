@@ -1,3 +1,29 @@
 {
-    "editor.formatOnSave": true
+    "typescript.tsdk": "./node_modules/typescript/lib",
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/.DS_Store": true,
+        "**/*.js*": { "when": "$(basename).ts" },
+        "**/*.js.map": true
+    },
+    "gitlens.advanced.messages": {
+        "suppressCommitHasNoPreviousCommitWarning": false,
+        "suppressCommitNotFoundWarning": false,
+        "suppressFileNotUnderSourceControlWarning": false,
+        "suppressGitVersionWarning": false,
+        "suppressLineUncommittedWarning": false,
+        "suppressNoRepositoryWarning": false,
+        "suppressResultsExplorerNotice": false,
+        "suppressShowKeyBindingsNotice": true
+    },
+    "gitlens.defaultDateFormat": "DD.MM.YYYY HH:mm",
+    "gitlens.historyExplorer.enabled": true,
+    "gitlens.codeLens.scopes": ["document", "containers", "blocks"],
+    "editor.formatOnSave": true,
+    "tslint.trace.server": "verbose",
+    "tslint.configFile": ".tslint.json",
+    "todo-tree.flat": true,
+    "typescript.referencesCodeLens.enabled": true
 }
